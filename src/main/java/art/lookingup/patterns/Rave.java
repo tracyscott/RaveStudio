@@ -10,7 +10,7 @@ import heronarts.lx.parameter.CompoundParameter;
 
 public class Rave extends LXPattern {
   public CompoundParameter flashTimeKnob = new CompoundParameter("fstime", 2000f, 0f, 5000f);
-  public CompoundParameter flashHzKnob = new CompoundParameter("fshz", 3f, 0f, 20f);
+  public CompoundParameter flashHzKnob = new CompoundParameter("fshz", 3f, 0.01f, 20f);
   public BooleanParameter whiteKnob = new BooleanParameter("white", false);
 
   int curFlashCh = CH_R;
@@ -31,7 +31,7 @@ public class Rave extends LXPattern {
   }
 
   public void run(double deltaMs) {
-    if (curFlash > flashHzKnob.getValue()) {
+    if (curFlash > 1000.0f/flashHzKnob.getValue()) {
       curFlash = 0.0;
       chIsOn = !chIsOn;
     }
@@ -41,6 +41,8 @@ public class Rave extends LXPattern {
       if (curFlashCh > CH_ALL)
         curFlashCh = CH_R;
       currentFlashTime = 0.0;
+      chIsOn = true;
+      curFlash = 0.0;
     }
     for (LXPoint p : model.points) {
       if (RaveModel3D.pointIsR(p) && chIsOn && (curFlashCh == CH_R || curFlashCh == CH_ALL)) {
