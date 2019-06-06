@@ -15,8 +15,42 @@ public class RaveModel3D extends LXModel {
 
   public final static int SIZE = 20;
 
+  public static float minX = Float.MAX_VALUE;
+  public static float minY = Float.MAX_VALUE;
+  public static float maxX = Float.MIN_VALUE;
+  public static float maxY = Float.MIN_VALUE;
+  public static float computedWidth = 1f;
+  public static float computedHeight= 1f;
+  public static float rowIncrementLength;
+  public static float colIncrementLength;
+
   public RaveModel3D(List<LXPoint> points) {
     super(points);
+    // Compute some stats on our points.
+    for (LXPoint p : points) {
+      if (p.x < minX) minX = p.x;
+      if (p.y < minY) minY = p.y;
+      if (p.x > maxX) maxX = p.x;
+      if (p.y > maxY) maxY = p.y;
+    }
+    computedWidth = maxX - minX;
+    computedHeight = maxY - minY;
+    colIncrementLength = computedWidth / POINTS_WIDE;
+    rowIncrementLength = computedHeight  / POINTS_HIGH;
   }
 
+  public static int[] pointToImageCoordinates(LXPoint p) {
+    int[] coordinates = {0, 0};
+    float offsetX = p.x - minX;
+    float offsetY = p.y - minY;
+    int columnNumber = (int)(offsetX / colIncrementLength);
+    int rowNumber = (int)(offsetY  / rowIncrementLength);
+    coordinates[0] = columnNumber;
+    // Transpose for Processing Image coordinates, otherwise images are upside down.
+    coordinates[1] = POINTS_HIGH-rowNumber;
+    return coordinates;
+  }
+
+  public static final int POINTS_WIDE = 46;
+  public static final int POINTS_HIGH = 46;
 }

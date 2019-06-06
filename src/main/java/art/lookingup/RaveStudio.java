@@ -8,6 +8,7 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.studio.LXStudio;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -220,6 +221,16 @@ public class RaveStudio extends PApplet {
     }
 
     logger.log(Level.INFO, "Num points:" + points.size());
+    // Save points to a file in order.  Used by Processing sketch to interactively do the pixel mapping.
+    try {
+      PrintWriter lxpointsFile = new PrintWriter("lxpoints.csv");
+      for (LXPoint p : points) {
+        lxpointsFile.println(p.x + "," + p.y);
+      }
+      lxpointsFile.close();
+    } catch (IOException ioex) {
+
+    }
     LXModel model = new RaveModel3D(points);
     LXStudio.Flags flags = new LXStudio.Flags();
     flags.showFramerate = false;
