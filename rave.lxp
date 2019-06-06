@@ -1,10 +1,10 @@
 {
   "version": "0.1.1",
-  "timestamp": 1559854163624,
+  "timestamp": 1559859582793,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
-    "modulationColor": -6422273,
+    "modulationColor": -65483,
     "internal": {},
     "parameters": {
       "label": "LX",
@@ -130,7 +130,7 @@
               "exp": 1.0
             },
             "children": {},
-            "basis": 0.2557008144740864
+            "basis": 0.36566129158485716
           }
         ],
         "modulations": [
@@ -370,7 +370,7 @@
           }
         ],
         "clips": [],
-        "patternIndex": 4,
+        "patternIndex": 5,
         "patterns": [
           {
             "id": 189,
@@ -519,6 +519,34 @@
                 "id": 333,
                 "class": "heronarts.lx.LXModulationEngine",
                 "modulationColor": -16754689,
+                "internal": {},
+                "parameters": {
+                  "label": "Modulation"
+                },
+                "children": {},
+                "modulators": [],
+                "modulations": [],
+                "triggers": []
+              }
+            }
+          },
+          {
+            "id": 375,
+            "class": "art.lookingup.patterns.Rave",
+            "modulationColor": -16711776,
+            "internal": {
+              "expanded": true,
+              "modulationExpanded": false,
+              "autoCycleEligible": true
+            },
+            "parameters": {
+              "label": "Rave"
+            },
+            "children": {
+              "modulation": {
+                "id": 376,
+                "class": "heronarts.lx.LXModulationEngine",
+                "modulationColor": -52736,
                 "internal": {},
                 "parameters": {
                   "label": "Modulation"

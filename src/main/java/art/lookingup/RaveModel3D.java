@@ -48,8 +48,48 @@ public class RaveModel3D extends LXModel {
     coordinates[0] = columnNumber;
     // Transpose for Processing Image coordinates, otherwise images are upside down.
     coordinates[1] = POINTS_HIGH-rowNumber;
+    //System.out.println ("x,y " + coordinates[0] + "," + coordinates[1]);
     return coordinates;
   }
+
+  /* @return true If point is contained in R, i.e. top-left quadrant. */
+  static public boolean pointIsR(LXPoint p) {
+    int[] coords = pointToImageCoordinates(p);
+    if (coords[0] <= POINTS_WIDE/2 + 1 &&
+        coords[1] <= POINTS_HIGH/2)
+      return true;
+    return false;
+  }
+
+  /* @return true If point is contained in A, i.e. top-right quadrant */
+  static public boolean pointIsA(LXPoint p) {
+    int[] coords = pointToImageCoordinates(p);
+    if (coords[0] > POINTS_WIDE/2 &&
+        coords[1] <= POINTS_HIGH/2)
+      return true;
+    return false;
+  }
+
+  /* @return true If point is contained in V, i.e. bottom-left quadrant */
+  static public boolean pointIsV(LXPoint p) {
+    int[] coords = pointToImageCoordinates(p);
+    if (coords[0] <= POINTS_WIDE/2 &&
+        coords[1] > POINTS_HIGH/2)
+      return true;
+    return false;
+  }
+
+  /* @return true If pointt is contained in E, i.e. bottom-right quadrant */
+  static public boolean pointIsE(LXPoint p) {
+    int[] coords = pointToImageCoordinates(p);
+    if (coords[0] > POINTS_WIDE/2 &&
+        coords[1] > POINTS_HIGH/2)
+      return true;
+
+    return false;
+  }
+
+
 
   public static final int POINTS_WIDE = 46;
   public static final int POINTS_HIGH = 46;
