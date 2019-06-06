@@ -64,7 +64,7 @@ public class RaveModel3D extends LXModel {
   /* @return true If point is contained in A, i.e. top-right quadrant */
   static public boolean pointIsA(LXPoint p) {
     int[] coords = pointToImageCoordinates(p);
-    if (coords[0] > POINTS_WIDE/2 &&
+    if (coords[0] > POINTS_WIDE/2 + 1 &&
         coords[1] <= POINTS_HIGH/2)
       return true;
     return false;
