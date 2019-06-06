@@ -1,0 +1,10 @@
+.lxproject
+.lxpreferences
+.DS_Store
+.idea/
+*.iml
+*.log
+target/
+*.lck
+*.tmp
+
