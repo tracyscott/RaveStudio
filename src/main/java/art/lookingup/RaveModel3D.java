@@ -15,14 +15,14 @@ public class RaveModel3D extends LXModel {
 
   public final static int SIZE = 20;
 
-  public static float minX = Float.MAX_VALUE;
-  public static float minY = Float.MAX_VALUE;
-  public static float maxX = Float.MIN_VALUE;
-  public static float maxY = Float.MIN_VALUE;
-  public static float computedWidth = 1f;
-  public static float computedHeight= 1f;
-  public static float rowIncrementLength;
-  public static float colIncrementLength;
+  public static double minX = Float.MAX_VALUE;
+  public static double minY = Float.MAX_VALUE;
+  public static double maxX = Float.MIN_VALUE;
+  public static double maxY = Float.MIN_VALUE;
+  public static double computedWidth = 1f;
+  public static double computedHeight= 1f;
+  public static double rowIncrementLength;
+  public static double colIncrementLength;
 
   public RaveModel3D(List<LXPoint> points) {
     super(points);
@@ -35,19 +35,19 @@ public class RaveModel3D extends LXModel {
     }
     computedWidth = maxX - minX;
     computedHeight = maxY - minY;
-    colIncrementLength = computedWidth / POINTS_WIDE;
-    rowIncrementLength = computedHeight  / POINTS_HIGH;
+    colIncrementLength = computedWidth / (POINTS_WIDE - 1);
+    rowIncrementLength = computedHeight  / (POINTS_HIGH - 1);
   }
 
   public static int[] pointToImageCoordinates(LXPoint p) {
     int[] coordinates = {0, 0};
-    float offsetX = p.x - minX;
-    float offsetY = p.y - minY;
-    int columnNumber = (int)(offsetX / colIncrementLength);
-    int rowNumber = (int)(offsetY  / rowIncrementLength);
+    double offsetX = p.x - minX;
+    double offsetY = p.y - minY;
+    int columnNumber = (int)Math.round(offsetX / colIncrementLength);
+    int rowNumber = (int)Math.round(offsetY  / rowIncrementLength);
     coordinates[0] = columnNumber;
     // Transpose for Processing Image coordinates, otherwise images are upside down.
-    coordinates[1] = POINTS_HIGH-rowNumber;
+    coordinates[1] = (POINTS_HIGH-1)-rowNumber;
     //System.out.println ("x,y " + coordinates[0] + "," + coordinates[1]);
     return coordinates;
   }
@@ -56,7 +56,7 @@ public class RaveModel3D extends LXModel {
   static public boolean pointIsR(LXPoint p) {
     int[] coords = pointToImageCoordinates(p);
     if (coords[0] <= POINTS_WIDE/2 + 1 &&
-        coords[1] <= POINTS_HIGH/2)
+        coords[1] < POINTS_HIGH/2)
       return true;
     return false;
   }
@@ -65,7 +65,7 @@ public class RaveModel3D extends LXModel {
   static public boolean pointIsA(LXPoint p) {
     int[] coords = pointToImageCoordinates(p);
     if (coords[0] > POINTS_WIDE/2 + 1 &&
-        coords[1] <= POINTS_HIGH/2)
+        coords[1] < POINTS_HIGH/2)
       return true;
     return false;
   }
@@ -74,7 +74,7 @@ public class RaveModel3D extends LXModel {
   static public boolean pointIsV(LXPoint p) {
     int[] coords = pointToImageCoordinates(p);
     if (coords[0] <= POINTS_WIDE/2 &&
-        coords[1] > POINTS_HIGH/2)
+        coords[1] >= POINTS_HIGH/2)
       return true;
     return false;
   }
@@ -83,7 +83,7 @@ public class RaveModel3D extends LXModel {
   static public boolean pointIsE(LXPoint p) {
     int[] coords = pointToImageCoordinates(p);
     if (coords[0] > POINTS_WIDE/2 &&
-        coords[1] > POINTS_HIGH/2)
+        coords[1] >= POINTS_HIGH/2)
       return true;
 
     return false;
