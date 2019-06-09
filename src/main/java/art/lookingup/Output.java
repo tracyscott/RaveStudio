@@ -49,6 +49,6 @@ public class Output {
     }
   }
 
-  public static void configureE131Output(LX lx, LightType lightType) {
+  public static void configureE131Output(LX lx) {
   }
 }
