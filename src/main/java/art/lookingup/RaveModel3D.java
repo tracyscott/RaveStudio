@@ -55,6 +55,17 @@ public class RaveModel3D extends LXModel {
   /* @return true If point is contained in R, i.e. top-left quadrant. */
   static public boolean pointIsR(LXPoint p) {
     int[] coords = pointToImageCoordinates(p);
+    // A couple of special cases for the overlapping A.  Found point indices with PixelMapping.
+    switch (p.index) {
+      case 499:
+      case 500:
+      case 505:
+      case 506:
+      case 515:
+      case 516:
+      return false;
+      default: ;
+    }
     if (coords[0] <= POINTS_WIDE/2 + 1 &&
         coords[1] < POINTS_HIGH/2)
       return true;
@@ -64,6 +75,17 @@ public class RaveModel3D extends LXModel {
   /* @return true If point is contained in A, i.e. top-right quadrant */
   static public boolean pointIsA(LXPoint p) {
     int[] coords = pointToImageCoordinates(p);
+    switch (p.index) {
+      case 499:
+      case 500:
+      case 505:
+      case 506:
+      case 515:
+      case 516:
+      return true;
+      default: ;
+    }
+
     if (coords[0] > POINTS_WIDE/2 + 1 &&
         coords[1] < POINTS_HIGH/2)
       return true;

@@ -1,10 +1,10 @@
 {
   "version": "0.1.1",
-  "timestamp": 1559867220346,
+  "timestamp": 1560043409019,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
-    "modulationColor": -65377,
+    "modulationColor": -16717825,
     "internal": {},
     "parameters": {
       "label": "LX",
@@ -27,7 +27,7 @@
       "crossfader": 0.5,
       "crossfaderBlendMode": 0,
       "speed": 1.0,
-      "focusedChannel": 0,
+      "focusedChannel": 1,
       "cueA": false,
       "cueB": false,
       "multithreaded": true,
@@ -130,7 +130,7 @@
               "exp": 1.0
             },
             "children": {},
-            "basis": 0.04274091450583342
+            "basis": 0.27024991366217976
           }
         ],
         "modulations": [
@@ -322,7 +322,7 @@
         "parameters": {
           "label": "Channel-2",
           "arm": false,
-          "selected": true,
+          "selected": false,
           "enabled": true,
           "cue": false,
           "fader": 1.0,
@@ -450,7 +450,7 @@
         "parameters": {
           "label": "Channel-1",
           "arm": false,
-          "selected": false,
+          "selected": true,
           "enabled": true,
           "cue": false,
           "fader": 1.0,
@@ -498,7 +498,7 @@
           }
         ],
         "clips": [],
-        "patternIndex": 6,
+        "patternIndex": 5,
         "patterns": [
           {
             "id": 189,
@@ -671,7 +671,7 @@
               "label": "Rave",
               "fstime": 3999.9999552965164,
               "fshz": 0.40130005805641394,
-              "white": false
+              "white": true
             },
             "children": {
               "modulation": {
