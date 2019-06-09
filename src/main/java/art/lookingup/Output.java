@@ -1,5 +1,6 @@
 package art.lookingup;
 
+import art.lookingup.ui.UIPixliteConfig;
 import heronarts.lx.LX;
 import heronarts.lx.output.ArtNetDatagram;
 import heronarts.lx.output.LXDatagramOutput;
@@ -19,10 +20,7 @@ public class Output {
 
   public static LXDatagramOutput datagramOutput = null;
 
-  public static String artnetIpAddress = "127.0.0.1";
-  public static int artnetPort = 6454;
-
-  public static void configureArtnetOutput(LX lx) {
+  public static void configureArtNetOutput(LX lx) {
     // This only works if we have less than 170 lxpoints.
     int[] dmxChannelsForUniverse = new int[20];
     for (int i = 0; i < 20; i++) {
@@ -30,10 +28,13 @@ public class Output {
     }
     ArtNetDatagram artnetDatagram = new ArtNetDatagram(dmxChannelsForUniverse);
 
+    String artNetIpAddress = RaveStudio.pixliteConfig.getStringParameter(UIPixliteConfig.PIXLITE_1_IP).getString();
+    int artNetIpPort = Integer.parseInt(RaveStudio.pixliteConfig.getStringParameter(UIPixliteConfig.PIXLITE_1_PORT).getString());
     try {
-      artnetDatagram.setAddress(artnetIpAddress).setPort(artnetPort);
+      logger.log(Level.INFO, "Using ArtNet: " + artNetIpAddress + ":" + artNetIpPort);
+      artnetDatagram.setAddress(artNetIpAddress).setPort(artNetIpPort);
     } catch (UnknownHostException uhex) {
-      logger.log(Level.SEVERE, "Configuring ArtNet: " + artnetIpAddress, uhex);
+      logger.log(Level.SEVERE, "Configuring ArtNet: " + artNetIpAddress + ":" + artNetIpPort, uhex);
     }
     try {
       datagramOutput = new LXDatagramOutput(lx);

@@ -1,5 +1,6 @@
 package art.lookingup;
 
+import art.lookingup.ui.*;
 import com.google.common.reflect.ClassPath;
 import heronarts.lx.LXEffect;
 import heronarts.lx.LXPattern;
@@ -11,7 +12,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -89,7 +89,17 @@ public class RaveStudio extends PApplet {
   public static PApplet pApplet;
   public static final int GLOBAL_FRAME_RATE = 40;
 
-    @Override
+  public static RainbowOSC rainbowOSC;
+
+  public static UIGammaSelector gammaControls;
+  public static UIModeSelector modeSelector;
+  public static UIAudioMonitorLevels audioMonitorLevels;
+  public static UIPixliteConfig pixliteConfig;
+  public static UIMidiControl uiMidiControl;
+  public static com.giantrainbow.OSCSensor oscSensor;
+  public static OSCSensorUI oscSensorUI;
+
+  @Override
   public void settings() {
     size(1024, 600, P3D);
   }
@@ -246,12 +256,26 @@ public class RaveStudio extends PApplet {
 
     lx.ui.setResizable(true);
 
+    oscSensor = new com.giantrainbow.OSCSensor(lx);
+    lx.engine.registerComponent("oscsensor", oscSensor);
+
+    oscSensorUI = (OSCSensorUI) new OSCSensorUI(lx.ui, lx, oscSensor).setExpanded(false).addToContainer(lx.ui.leftPane.global);
+
+    audioMonitorLevels = (UIAudioMonitorLevels) new UIAudioMonitorLevels(lx.ui).setExpanded(false).addToContainer(lx.ui.leftPane.global);
+    gammaControls = (UIGammaSelector) new UIGammaSelector(lx.ui).setExpanded(false).addToContainer(lx.ui.leftPane.global);
+    modeSelector = (UIModeSelector) new UIModeSelector(lx.ui, lx, audioMonitorLevels).setExpanded(true).addToContainer(lx.ui.leftPane.global);
+    uiMidiControl = (UIMidiControl) new UIMidiControl(lx.ui, lx, modeSelector).setExpanded(false).addToContainer(lx.ui.leftPane.global);
+    pixliteConfig = (UIPixliteConfig) new UIPixliteConfig(lx.ui, lx).setExpanded(false).addToContainer(lx.ui.leftPane.global);
+    lx.engine.midi.addListener(uiMidiControl);
+
     if (enableOutput) {
       //Output.configureE131Output(lx, Output.LightType.OPPSKPAR);
-      Output.configureArtnetOutput(lx);
+      Output.configureArtNetOutput(lx);
     }
     if (disableOutputOnStart)
       lx.engine.output.enabled.setValue(false);
+
+    rainbowOSC = new RainbowOSC(lx);
 
     frameRate(GLOBAL_FRAME_RATE);
   }
