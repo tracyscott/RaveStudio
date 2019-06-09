@@ -17,34 +17,6 @@ import java.util.logging.Logger;
 public class Output {
   private static final Logger logger = Logger.getLogger(Output.class.getName());
 
-  public enum LightType {
-    LALUCE(1),
-    PRODPAR(2),
-    PRODWASH(3),
-    OPPSKPAR(4);
-
-    private int value;
-    private static Map map = new HashMap<Integer, LightType>();
-
-    private LightType(int value) {
-      this.value = value;
-    }
-
-    static {
-      for (LightType lightType : LightType.values()) {
-        map.put(lightType.value, lightType);
-      }
-    }
-
-    public static LightType valueOf(int pageType) {
-      return (LightType) map.get(pageType);
-    }
-
-    public int getValue() {
-      return value;
-    }
-  }
-
   public static LXDatagramOutput datagramOutput = null;
 
   public static String artnetIpAddress = "127.0.0.1";
