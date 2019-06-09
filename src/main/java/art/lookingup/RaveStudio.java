@@ -247,8 +247,8 @@ public class RaveStudio extends PApplet {
     lx.ui.setResizable(true);
 
     if (enableOutput) {
-      Output.configureE131Output(lx, Output.LightType.OPPSKPAR);
-      //Output.configureArtnetOutput(lx);
+      //Output.configureE131Output(lx, Output.LightType.OPPSKPAR);
+      Output.configureArtnetOutput(lx);
     }
     if (disableOutputOnStart)
       lx.engine.output.enabled.setValue(false);
