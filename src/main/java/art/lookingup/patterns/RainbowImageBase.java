@@ -4,9 +4,7 @@ import art.lookingup.PathUtils;
 import art.lookingup.RaveStudio;
 import heronarts.lx.LX;
 import heronarts.lx.LXPattern;
-import heronarts.lx.parameter.BooleanParameter;
-import heronarts.lx.parameter.CompoundParameter;
-import heronarts.lx.parameter.StringParameter;
+import heronarts.lx.parameter.*;
 import heronarts.p3lx.ui.CustomDeviceUI;
 import heronarts.p3lx.ui.UI;
 import heronarts.p3lx.ui.UI2dContainer;
@@ -24,11 +22,11 @@ import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PImage;
 
-abstract class RainbowImageBase extends LXPattern implements CustomDeviceUI {
+abstract class RainbowImageBase extends RPattern implements CustomDeviceUI {
   private static final Logger logger = Logger.getLogger(RainbowImageBase.class.getName());
 
   public final CompoundParameter fpsKnob =
-      new CompoundParameter("Fps", 1.0, 10.0)
+      new CompoundParameter("Fps", 1.0, 61.0)
           .setDescription("Controls the frames per second.");
   public final BooleanParameter antialiasKnob =
       new BooleanParameter("antialias", true);
@@ -36,6 +34,7 @@ abstract class RainbowImageBase extends LXPattern implements CustomDeviceUI {
       new StringParameter("img", "")
           .setDescription("Texture image for rainbow.");
   public final BooleanParameter tileKnob = new BooleanParameter("tile", false);
+  public final BooleanParameter scanKnob = new BooleanParameter("scan", false);
 
   protected List<FileItem> fileItems = new ArrayList<FileItem>();
   protected UIItemList.ScrollList fileItemList;
@@ -56,7 +55,8 @@ abstract class RainbowImageBase extends LXPattern implements CustomDeviceUI {
 
   public RainbowImageBase(LX lx, int imageWidth, int imageHeight,
                           String filesDir, String defaultFile,
-                          boolean includeAntialias) {
+                          boolean includeAntialias,
+                          boolean scan) {
     super(lx);
     this.imageWidth = imageWidth;
     this.imageHeight = imageHeight;
@@ -68,24 +68,33 @@ abstract class RainbowImageBase extends LXPattern implements CustomDeviceUI {
     reloadFileList();
     pg = RaveStudio.pApplet.createGraphics(imageWidth, imageHeight);
 
+    scanKnob.setValue(scan);
     addParameter(fpsKnob);
     if (includeAntialias) {
       addParameter(antialiasKnob);
     }
     addParameter(imgKnob);
-    imgKnob.setValue(defaultFile);
-    loadImg(imgKnob.getString());
-
+    imgKnob.addListener(new LXParameterListener() {
+      @Override
+      public void onParameterChanged(LXParameter parameter) {
+        StringParameter iKnob = (StringParameter) parameter;
+        loadImg(iKnob.getString());
+      }
+    });
     addParameter(tileKnob);
-
   }
 
   private void loadImg(String imgname) {
     logger.info("Loading image: " + imgname);
     tileImage = RaveStudio.pApplet.loadImage(filesDir + imgname);
     if (!tileKnob.getValueb()) {
-      tileImage.resize(imageWidth, imageHeight);
-      image = tileImage;
+      if (!scanKnob.getValueb()) {
+        tileImage.resize(imageWidth, imageHeight);
+        image = tileImage;
+      } else {
+        // Don't resize when we are scanning, we will just move a pg.width,pg.height rectangle around
+        image = tileImage;
+      }
     } else {
       // Tile the image to fill the space horizontally.  Scale the image vertically
       // to fit.
@@ -112,7 +121,7 @@ abstract class RainbowImageBase extends LXPattern implements CustomDeviceUI {
     }
   }
 
-  public void run(double deltaMs) {
+  public void render(double deltaMs) {
     double fps = fpsKnob.getValue();
     /* Leaving FPS and frame logic for now incase we want to do some Ken Burns
     currentFrame += (deltaMs/1000.0) * fps;

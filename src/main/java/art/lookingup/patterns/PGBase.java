@@ -13,7 +13,7 @@ import java.util.Random;
 import processing.core.PGraphics;
 
 /** Abstract base class for all Processing PGraphics drawing and mapping to the Rainbow. */
-abstract class PGBase extends LXPattern {
+abstract class PGBase extends RPattern {
   public final CompoundParameter fpsKnob =
       new CompoundParameter("Fps", GLOBAL_FRAME_RATE, 0.0, GLOBAL_FRAME_RATE + 10)
           .setDescription("Controls the frames per second.");
@@ -66,7 +66,7 @@ abstract class PGBase extends LXPattern {
   }
 
   @Override
-  public void run(double deltaMs) {
+  public void render(double deltaMs) {
     if (!setupCalled) {
       pg.beginDraw();
       setup();

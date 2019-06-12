@@ -23,6 +23,29 @@ public class RaveModel3D extends LXModel {
   public static double computedHeight= 1f;
   public static double rowIncrementLength;
   public static double colIncrementLength;
+  public static List<LXPoint> frontPoints = new ArrayList<LXPoint>();
+  public static List<LXPoint> backPoints = new ArrayList<LXPoint>();
+
+  // These are populated in Output when reading the wiring.txt file.
+  public static List<Integer> frontWiringOrder = new ArrayList<Integer>();
+  public static List<Integer> backWiringOrder = new ArrayList<Integer>();
+
+
+  public static RaveModel3D createModel(List<LXPoint> points) {
+    List<LXPoint> allPoints = new ArrayList<LXPoint>();
+
+    for (LXPoint point : points) {
+      LXPoint backPoint = new LXPoint(point.x, point.y, 10);
+      backPoints.add(backPoint);
+      allPoints.add(point);
+    }
+    for (LXPoint backPoint : backPoints) {
+      allPoints.add(backPoint);
+    }
+    frontPoints = points;
+
+    return new RaveModel3D(allPoints);
+  }
 
   public RaveModel3D(List<LXPoint> points) {
     super(points);
@@ -39,6 +62,8 @@ public class RaveModel3D extends LXModel {
     rowIncrementLength = computedHeight  / (POINTS_HIGH - 1);
   }
 
+
+
   public static int[] pointToImageCoordinates(LXPoint p) {
     int[] coordinates = {0, 0};
     double offsetX = p.x - minX;
@@ -48,6 +73,23 @@ public class RaveModel3D extends LXModel {
     coordinates[0] = columnNumber;
     // Transpose for Processing Image coordinates, otherwise images are upside down.
     coordinates[1] = (POINTS_HIGH-1)-rowNumber;
+    //System.out.println ("x,y " + coordinates[0] + "," + coordinates[1]);
+    return coordinates;
+  }
+
+  public static int[] pointToImageCoordinatesWide(LXPoint p) {
+    int[] coordinates = {0, 0};
+    double offsetX = p.x - minX;
+    double offsetY = p.y - minY;
+    int columnNumber = (int)Math.round(offsetX / colIncrementLength);
+    int rowNumber = (int)Math.round(offsetY  / rowIncrementLength);
+    coordinates[0] = columnNumber;
+    // Transpose for Processing Image coordinates, otherwise images are upside down.
+    coordinates[1] = (POINTS_HIGH-1)-rowNumber;
+    // Allow for wide images.
+    if (p.z > 9.9 && p.z < 10.1) {
+      coordinates[0] = 46 + (POINTS_WIDE-1) - coordinates[0];
+    }
     //System.out.println ("x,y " + coordinates[0] + "," + coordinates[1]);
     return coordinates;
   }
@@ -64,7 +106,7 @@ public class RaveModel3D extends LXModel {
       case 515:
       case 516:
       return false;
-      default: ;
+      default:
     }
     if (coords[0] <= POINTS_WIDE/2 + 1 &&
         coords[1] < POINTS_HIGH/2)
@@ -83,7 +125,7 @@ public class RaveModel3D extends LXModel {
       case 515:
       case 516:
       return true;
-      default: ;
+      default:
     }
 
     if (coords[0] > POINTS_WIDE/2 + 1 &&

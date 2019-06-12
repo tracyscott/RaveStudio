@@ -10,6 +10,7 @@ public class RainbowImagePP extends RainbowImageBase {
     super(lx, RaveModel3D.POINTS_WIDE, RaveModel3D.POINTS_HIGH,
         "imgpp/",
         "oregon.jpg",
+        false,
         false);
   }
 

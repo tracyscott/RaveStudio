@@ -11,7 +11,7 @@ import heronarts.lx.parameter.DiscreteParameter;
 
 import static java.lang.Math.ceil;
 
-public class RaByVe extends LXPattern {
+public class RaByVe extends RPattern {
   public CompoundParameter chTimeKnob = new CompoundParameter("chtime", 2000f, 0f, 5000f);
   public DiscreteParameter paletteKnob = new DiscreteParameter("palette", 1, 1, Colors.ALL_PALETTES.length + 1);
   public BooleanParameter whiteKnob = new BooleanParameter("white", false);
@@ -29,6 +29,7 @@ public class RaByVe extends LXPattern {
     addParameter(paletteKnob);
     addParameter(whiteKnob);
     curColor = chooseRandomColor();
+    needsMirror = false;
   }
 
   protected int chooseRandomColor() {
@@ -40,7 +41,7 @@ public class RaByVe extends LXPattern {
     return color;
   }
 
-  public void run(double deltaMs) {
+  public void render(double deltaMs) {
     if (curChTime > chTimeKnob.getValue()) {
       curCh++;
       if (curCh > CH_VE)

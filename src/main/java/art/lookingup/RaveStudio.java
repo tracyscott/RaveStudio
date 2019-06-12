@@ -101,7 +101,7 @@ public class RaveStudio extends PApplet {
 
   @Override
   public void settings() {
-    size(1024, 600, P3D);
+    size(1024, 678, P3D);
   }
 
   /**
@@ -241,7 +241,7 @@ public class RaveStudio extends PApplet {
     } catch (IOException ioex) {
 
     }
-    LXModel model = new RaveModel3D(points);
+    LXModel model = RaveModel3D.createModel(points);
     LXStudio.Flags flags = new LXStudio.Flags();
     flags.showFramerate = false;
     flags.isP3LX = true;

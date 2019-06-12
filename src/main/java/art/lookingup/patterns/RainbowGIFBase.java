@@ -25,7 +25,7 @@ import processing.core.PImage;
  * the larger texture with antialias sampling and the pixel perfect renderings
  * with direct 1:1 pixel mappings (with bend distortion in physical space).
  */
-abstract class RainbowGIFBase extends LXPattern implements CustomDeviceUI {
+abstract class RainbowGIFBase extends RPattern implements CustomDeviceUI {
   private static final Logger logger = Logger.getLogger(RainbowGIFBase.class.getName());
 
   public final CompoundParameter fpsKnob =
@@ -91,7 +91,7 @@ abstract class RainbowGIFBase extends LXPattern implements CustomDeviceUI {
     images = newImages;
   }
 
-  public void run(double deltaMs) {
+  public void render(double deltaMs) {
     double fps = fpsKnob.getValue();
     currentFrame += (deltaMs/1000.0) * fps;
     if (images == null) return;

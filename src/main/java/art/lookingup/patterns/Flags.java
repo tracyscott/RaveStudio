@@ -21,7 +21,7 @@ import heronarts.lx.parameter.DiscreteParameter;
  * Flags
  *
  */
-public class Flags extends LXPattern {
+public class Flags extends RPattern {
 
   public final DiscreteParameter flagKnob =
       new DiscreteParameter("Flag", 0, 5)
@@ -92,7 +92,7 @@ public class Flags extends LXPattern {
     flag = flags[round((float)(flagKnob.getValue()))];
   }
 
-  public void run(double deltaMs) {
+  public void render(double deltaMs) {
     int numRows = RaveModel3D.POINTS_HIGH;
     int flagNum = round((float)(flagKnob.getValue()));
     if (flagNum < 0) flagNum = 0;
@@ -102,7 +102,7 @@ public class Flags extends LXPattern {
     int pointNumber = 0;
     for (LXPoint p : model.points) {
       int[] imageCoords = RaveModel3D.pointToImageCoordinates(p);
-      int rowNumber = imageCoords[1];
+      int rowNumber = (RaveModel3D.POINTS_HIGH-1)-imageCoords[1];
       // With 46 pixels high, we need to modify numRows so that it is a multiple
       // of the number of bands in our flag. This will just use rounding to
       // distribute the extra pixel rows.  Need different logic for exact proportions

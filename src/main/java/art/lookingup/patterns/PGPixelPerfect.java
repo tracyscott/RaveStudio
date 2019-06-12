@@ -11,8 +11,8 @@ import heronarts.lx.LX;
  */
 abstract class PGPixelPerfect extends PGBase {
   public PGPixelPerfect(LX lx, String drawMode) {
-    super(lx, RaveModel3D.POINTS_HIGH,
-      RaveModel3D.POINTS_WIDE,
+    super(lx, RaveModel3D.POINTS_WIDE,
+      RaveModel3D.POINTS_HIGH,
       drawMode);
   }
 

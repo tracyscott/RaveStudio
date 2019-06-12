@@ -3,6 +3,7 @@ package art.lookingup.patterns;
 import art.lookingup.RaveStudio;
 import art.lookingup.RaveModel3D;
 
+import art.lookingup.colors.Colors;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import java.util.logging.Logger;
@@ -45,6 +46,10 @@ class RenderImageUtil {
     return rainbow;
   }
 
+  public static void imageToPointsPixelPerfect(LXModel model, PImage image, int[] colors) {
+    imageToPointsPixelPerfect(model, image, colors, 0, 0);
+  }
+
   /**
    * Render an image to the installation pixel-perfect.  This effectively treats the
    * installation as a 46x46 image.  Since the pixel coordinates are in a cartesian
@@ -56,14 +61,32 @@ class RenderImageUtil {
    * <p>
    * Note that point (0,0) is at the bottom left in {@code colors}.</p>
    */
-  public static void imageToPointsPixelPerfect(LXModel lxModel, PImage image, int[] colors) {
+  public static void imageToPointsPixelPerfect(LXModel lxModel, PImage image, int[] colors, int xOffset, int yOffset) {
     // (0, 0) is at the bottom left in the colors array
 
     image.loadPixels();
     for (int cindex = 0; cindex < colors.length; cindex++) {
       LXPoint p = lxModel.points[cindex];
       int[] imgCoords = RaveModel3D.pointToImageCoordinates(p);
+      colors[cindex] = image.get(imgCoords[0] + xOffset, imgCoords[1] + yOffset);
+    }
+  }
+
+  public static void imageToPointsPixelPerfectWide(LXModel lxModel, PImage image, int[] colors) {
+    image.loadPixels();
+    for (int cindex = 0; cindex < colors.length; cindex++) {
+      LXPoint p = lxModel.points[cindex];
+      int[] imgCoords = RaveModel3D.pointToImageCoordinatesWide(p);
       colors[cindex] = image.get(imgCoords[0], imgCoords[1]);
+
+      /*
+      if (cindex > 1050) {
+        System.out.println("cindex=" + cindex + " img coords =" + imgCoords[0] + "," + imgCoords[1]);
+        colors[cindex] = Colors.YELLOW;
+      } else {
+        colors[cindex] = Colors.BLUE;
+      }
+      */
     }
   }
 }

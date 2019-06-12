@@ -2,6 +2,7 @@ package art.lookingup;
 
 import art.lookingup.ui.UIPixliteConfig;
 import heronarts.lx.LX;
+import heronarts.lx.model.LXPoint;
 import heronarts.lx.output.ArtNetDatagram;
 import heronarts.lx.output.LXDatagramOutput;
 
@@ -24,7 +25,11 @@ public class Output {
   private static final Logger logger = Logger.getLogger(Output.class.getName());
 
   public static LXDatagramOutput datagramOutput = null;
-  public static int MAX_OUTPUTS = 16;
+
+  public static final int MAX_OUTPUTS = 16;
+  public static final int RAVE_OUTPUTS = 8;
+  public static final int RAVE_UNIVERSES_PER_OUTPUT = 2;
+  public static final int RAVE_UNIVERSES = RAVE_OUTPUTS * RAVE_UNIVERSES_PER_OUTPUT;
 
   public static ArrayList<Integer>[] outputs = new ArrayList[MAX_OUTPUTS];
 
@@ -75,45 +80,56 @@ public class Output {
 
     int outputNumber = 1;
     int universeNumber = 1;
-    for (List<Integer> indices : outputs) {
-      // Add point indices in chunks of 170.  After 170 build datagram and then increment the universeNumber.
-      // Continuing adding points and building datagrams every 170 points.  After all points for an output
-      // have been added to datagrams, start on a new output and reset counters.
+    RaveModel3D.frontWiringOrder = new ArrayList<Integer>();
+    RaveModel3D.backWiringOrder = new ArrayList<Integer>();
 
-      int chunkNumber = 0;
-      boolean endOfOutput = false;
-      int pointNum = 0;
-      while (pointNum + chunkNumber * 170 < indices.size()) {
-        // Compute the dataLength.  For a string of 200 leds, we should have dataLengths of
-        // 170 and then 30.  So for the second pass, chunkNumber=1.  Overrun is 2*170 - 200 = 340 - 200 = 140
-        // We subtract 170-overrun = 30, which is the remainder number of the leds on the last chunk.
-        // 350 leds = chunkNumber = 2, 510 - 350 = 160.  170-160=10.
-        int overrun = ((chunkNumber+1) * 170) - indices.size();
-        int dataLength = (overrun < 0)?170:170 - overrun;
-        int[] thisUniverseIndices = new int[dataLength];
-        // For each chunk of 170 points, add them to a datagram.
-        for (pointNum = 0; pointNum < 170 && (pointNum + chunkNumber * 170 < indices.size());
-             pointNum++) {
-          thisUniverseIndices[pointNum] = indices.get(pointNum + chunkNumber * 170);
+    while (universeNumber <= RAVE_UNIVERSES) {
+      for (List<Integer> indices : outputs) {
+        // For the Rave sign, we only have outputs 1 through 4 mapped.  If there is nothing on the output in the
+        // wiring.txt file skip it.  We will make 2 passes of the wiring.txt file, one for each side of the sign.
+        if (indices.size() == 0) continue;
+        // Add point indices in chunks of 170.  After 170 build datagram and then increment the universeNumber.
+        // Continuing adding points and building datagrams every 170 points.  After all points for an output
+        // have been added to datagrams, start on a new output and reset counters.
+        int chunkNumber = 0;
+        int pointNum = 0;
+        while (pointNum + chunkNumber * 170 < indices.size()) {
+          // Compute the dataLength.  For a string of 200 leds, we should have dataLengths of
+          // 170 and then 30.  So for the second pass, chunkNumber=1.  Overrun is 2*170 - 200 = 340 - 200 = 140
+          // We subtract 170-overrun = 30, which is the remainder number of the leds on the last chunk.
+          // 350 leds = chunkNumber = 2, 510 - 350 = 160.  170-160=10.
+          int overrun = ((chunkNumber + 1) * 170) - indices.size();
+          int dataLength = (overrun < 0) ? 170 : 170 - overrun;
+          int[] thisUniverseIndices = new int[dataLength];
+          // For each chunk of 170 points, add them to a datagram.
+          for (pointNum = 0; pointNum < 170 && (pointNum + chunkNumber * 170 < indices.size());
+               pointNum++) {
+            int pIndex = indices.get(pointNum + chunkNumber * 170);
+            thisUniverseIndices[pointNum] = pIndex;
+            if (outputNumber <= RAVE_OUTPUTS/2) {
+              RaveModel3D.frontWiringOrder.add(pIndex);
+            } else {
+              RaveModel3D.backWiringOrder.add(pIndex);
+            }
+          }
+          logger.log(Level.INFO, "Adding datagram: output=" + outputNumber + " universe=" + universeNumber + " points=" + pointNum);
+          ArtNetDatagram artNetDatagram = new ArtNetDatagram(thisUniverseIndices, universeNumber);
+          try {
+            artNetDatagram.setAddress(artNetIpAddress).setPort(artNetIpPort);
+          } catch (UnknownHostException uhex) {
+            logger.log(Level.SEVERE, "Configuring ArtNet: " + artNetIpAddress + ":" + artNetIpPort, uhex);
+          }
+          datagrams.add(artNetDatagram);
+          // We have either added 170 points and maybe less if it is the last few points for a given output.  Each
+          // time we build a datagram for a chunk, we need to increment the universeNumber, reset the pointNum to zero,
+          // and increment our chunkNumber
+          ++universeNumber;
+          pointNum = 0;
+          chunkNumber++;
         }
-        logger.log(Level.INFO, "Adding datagram: output=" + outputNumber + " universe=" + universeNumber + " points=" + pointNum);
-        ArtNetDatagram artNetDatagram = new ArtNetDatagram(thisUniverseIndices, universeNumber);
-        try {
-          artNetDatagram.setAddress(artNetIpAddress).setPort(artNetIpPort);
-        } catch (UnknownHostException uhex) {
-          logger.log(Level.SEVERE, "Configuring ArtNet: " + artNetIpAddress + ":" + artNetIpPort, uhex);
-        }
-        datagrams.add(artNetDatagram);
-        // We have either added 170 points and maybe less if it is the last few points for a given output.  Each
-        // time we build a datagram for a chunk, we need to increment the universeNumber, reset the pointNum to zero,
-        // and increment our chunkNumber
-        ++universeNumber;
-        pointNum = 0;
-        chunkNumber++;
+        outputNumber++;
       }
-      outputNumber++;
     }
-
     try {
       datagramOutput = new LXDatagramOutput(lx);
       for (ArtNetDatagram datagram : datagrams) {
@@ -123,13 +139,9 @@ public class Output {
       logger.log(Level.SEVERE, "Initializing LXDatagramOutput failed.", sex);
     }
     if (datagramOutput != null) {
-      System.out.println("Output added");
       lx.engine.output.addChild(datagramOutput);
     } else {
       logger.log(Level.SEVERE, "Did not configure output, error during LXDatagramOutput init");
     }
-  }
-
-  public static void configureE131Output(LX lx) {
   }
 }
