@@ -92,10 +92,19 @@
     </build>
 
     <dependencies>
+        <!--
         <dependency>
             <groupId>org.processing</groupId>
             <artifactId>core</artifactId>
             <version>3.3.7</version>
+            <scope>compile</scope>
+        </dependency>
+    -->
+
+        <dependency>
+            <groupId>org.processing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.4.1</version>
             <scope>compile</scope>
         </dependency>
 
