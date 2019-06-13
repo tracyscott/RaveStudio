@@ -256,29 +256,11 @@ public class RaveStudio extends PApplet {
 
     lx.ui.setResizable(true);
 
-    oscSensor = new com.giantrainbow.OSCSensor(lx);
-    lx.engine.registerComponent("oscsensor", oscSensor);
 
-    oscSensorUI = (OSCSensorUI) new OSCSensorUI(lx.ui, lx, oscSensor).setExpanded(false).addToContainer(lx.ui.leftPane.global);
-
-    audioMonitorLevels = (UIAudioMonitorLevels) new UIAudioMonitorLevels(lx.ui).setExpanded(false).addToContainer(lx.ui.leftPane.global);
-    gammaControls = (UIGammaSelector) new UIGammaSelector(lx.ui).setExpanded(false).addToContainer(lx.ui.leftPane.global);
-    modeSelector = (UIModeSelector) new UIModeSelector(lx.ui, lx, audioMonitorLevels).setExpanded(true).addToContainer(lx.ui.leftPane.global);
-    uiMidiControl = (UIMidiControl) new UIMidiControl(lx.ui, lx, modeSelector).setExpanded(false).addToContainer(lx.ui.leftPane.global);
-    pixliteConfig = (UIPixliteConfig) new UIPixliteConfig(lx.ui, lx).setExpanded(false).addToContainer(lx.ui.leftPane.global);
-    lx.engine.midi.addListener(uiMidiControl);
-
-    if (enableOutput) {
-      //Output.configureE131Output(lx, Output.LightType.OPPSKPAR);
-      Output.configureArtNetOutput(lx);
-    }
-    if (disableOutputOnStart)
-      lx.engine.output.enabled.setValue(false);
-
-    rainbowOSC = new RainbowOSC(lx);
 
     frameRate(GLOBAL_FRAME_RATE);
   }
+
 
   public void initialize(final LXStudio lx, LXStudio.UI ui) {
     // Add custom components or output drivers here
@@ -293,7 +275,28 @@ public class RaveStudio extends PApplet {
   }
 
   public void onUIReady(LXStudio lx, LXStudio.UI ui) {
+    oscSensor = new com.giantrainbow.OSCSensor(lx);
+    lx.engine.registerComponent("oscsensor", oscSensor);
+    //modeSelector = (UIModeSelector) new UIModeSelector(lx.ui, lx, audioMonitorLevels).setExpanded(true).addToContainer(lx.ui.leftPane.global);
+    //modeSelector = (UIModeSelector) new UIModeSelector(lx.ui, lx, audioMonitorLevels).setExpanded(true).addToContainer(lx.ui.leftPane.global);
+    oscSensorUI = (OSCSensorUI) new OSCSensorUI(lx.ui, lx, oscSensor).setExpanded(false).addToContainer(lx.ui.leftPane.global);
 
+    audioMonitorLevels = (UIAudioMonitorLevels) new UIAudioMonitorLevels(lx.ui).setExpanded(false).addToContainer(lx.ui.leftPane.global);
+    gammaControls = (UIGammaSelector) new UIGammaSelector(lx.ui).setExpanded(false).addToContainer(lx.ui.leftPane.global);
+    uiMidiControl = (UIMidiControl) new UIMidiControl(lx.ui, lx, modeSelector).setExpanded(false).addToContainer(lx.ui.leftPane.global);
+    pixliteConfig = (UIPixliteConfig) new UIPixliteConfig(lx.ui, lx).setExpanded(false).addToContainer(lx.ui.leftPane.global);
+    lx.engine.midi.addListener(uiMidiControl);
+    if (enableOutput) {
+      //Output.configureE131Output(lx, Output.LightType.OPPSKPAR);
+      Output.configureArtNetOutput(lx);
+    }
+    if (disableOutputOnStart)
+      lx.engine.output.enabled.setValue(false);
+
+    rainbowOSC = new RainbowOSC(lx);
+
+    modeSelector = (UIModeSelector) new UIModeSelector(lx.ui, lx, audioMonitorLevels).setExpanded(true).addToContainer(lx.ui.leftPane.global);
+    modeSelector.standardMode.setActive(true);
   }
 
   public void draw() {

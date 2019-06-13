@@ -168,7 +168,6 @@ public class UIModeSelector extends UICollapsibleSection {
 
     if (lx.engine.audio.input != null) {
       if (lx.engine.audio.input.device.getObject().isAvailable()) {
-        this.standardMode.setActive(true);
         lx.engine.audio.enabled.setValue(true);
         lx.engine.addLoopTask(new AudioMonitor());
       } else {
