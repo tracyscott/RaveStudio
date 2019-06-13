@@ -81,6 +81,7 @@ abstract class RainbowImageBase extends RPattern implements CustomDeviceUI {
         loadImg(iKnob.getString());
       }
     });
+    imgKnob.setValue(defaultFile);
     addParameter(tileKnob);
   }
 
