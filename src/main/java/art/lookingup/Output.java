@@ -4,6 +4,7 @@ import art.lookingup.ui.UIPixliteConfig;
 import heronarts.lx.LX;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.output.ArtNetDatagram;
+import heronarts.lx.output.ArtSyncDatagram;
 import heronarts.lx.output.LXDatagramOutput;
 
 import java.io.BufferedReader;
@@ -105,6 +106,7 @@ public class Output {
           for (pointNum = 0; pointNum < 170 && (pointNum + chunkNumber * 170 < indices.size());
                pointNum++) {
             int pIndex = indices.get(pointNum + chunkNumber * 170);
+            if (outputNumber > RAVE_OUTPUTS/2) pIndex += 1050;
             thisUniverseIndices[pointNum] = pIndex;
             if (outputNumber <= RAVE_OUTPUTS/2) {
               RaveModel3D.frontWiringOrder.add(pIndex);
@@ -112,8 +114,13 @@ public class Output {
               RaveModel3D.backWiringOrder.add(pIndex);
             }
           }
+          System.out.println("thisUniverseIndices.length: " + thisUniverseIndices.length);
+          for (int k = 0; k < thisUniverseIndices.length; k++) {
+            System.out.print("" + thisUniverseIndices[k] + ",");
+          }
+          System.out.println("");
           logger.log(Level.INFO, "Adding datagram: output=" + outputNumber + " universe=" + universeNumber + " points=" + pointNum);
-          ArtNetDatagram artNetDatagram = new ArtNetDatagram(thisUniverseIndices, universeNumber);
+          ArtNetDatagram artNetDatagram = new ArtNetDatagram(thisUniverseIndices, dataLength*3, universeNumber);
           try {
             artNetDatagram.setAddress(artNetIpAddress).setPort(artNetIpPort);
           } catch (UnknownHostException uhex) {
@@ -134,6 +141,11 @@ public class Output {
       datagramOutput = new LXDatagramOutput(lx);
       for (ArtNetDatagram datagram : datagrams) {
         datagramOutput.addDatagram(datagram);
+      }
+      try {
+        datagramOutput.addDatagram(new ArtSyncDatagram().setAddress(artNetIpAddress).setPort(artNetIpPort));
+      } catch (UnknownHostException uhex) {
+        logger.log(Level.SEVERE, "Unknown host for ArtNet sync.", uhex);
       }
     } catch (SocketException sex) {
       logger.log(Level.SEVERE, "Initializing LXDatagramOutput failed.", sex);

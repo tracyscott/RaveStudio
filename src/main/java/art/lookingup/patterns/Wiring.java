@@ -9,7 +9,7 @@ import heronarts.lx.parameter.CompoundParameter;
 public class Wiring extends RPattern {
 
   public final CompoundParameter fpsKnob =
-      new CompoundParameter("Fps", 61.0, 1.0, 61.0)
+      new CompoundParameter("Fps", 61.0, 0.0, 61.0)
           .setDescription("Controls the frames per second.");
   public final CompoundParameter tailKnob =
       new CompoundParameter("Tail", 85.0, 0.0, 1051.0)
@@ -52,6 +52,7 @@ public class Wiring extends RPattern {
     for (int i = 0; i < colors.length; i++) {
       colors[i] = Colors.BLACK;
     }
+    System.out.println("pIndex=" + pIndex);
     colors[pIndex] = Colors.WHITE;
     int tailLength = (int)tailKnob.getValue();
     int visibleTailLength = (pos > tailLength)? tailLength : pos;
