@@ -176,32 +176,32 @@ public class RaveStudio extends PApplet {
       XPath xpath = xpf.newXPath();
       XPathExpression expression = xpath.compile(xpathExpression);
       NodeList svgPaths = (NodeList)expression.evaluate(document, XPathConstants.NODESET);
-      logger.log(Level.INFO, "Num total nodes: " + svgPaths.getLength());
+      //logger.log(Level.INFO, "Num total nodes: " + svgPaths.getLength());
       boolean skippedFirstAlready = false;
       for (int i = 0; i < svgPaths.getLength(); i++) {
         Node node = svgPaths.item(i);
         NamedNodeMap gNodeMap = node.getAttributes();
         Node transformNode = gNodeMap.getNamedItem("transform");
         if (transformNode == null) continue;
-        logger.log(Level.INFO, "Transform=" + transformNode.getNodeValue());
-        logger.log(Level.INFO, "N Value = " + node.getNodeValue());
-        logger.log(Level.INFO, "Child Nodes: " + node.getChildNodes().getLength());
+        //logger.log(Level.INFO, "Transform=" + transformNode.getNodeValue());
+        //logger.log(Level.INFO, "N Value = " + node.getNodeValue());
+        //logger.log(Level.INFO, "Child Nodes: " + node.getChildNodes().getLength());
         Node path = node.getChildNodes().item(0);
-        logger.log(Level.INFO, "node value " + path.getNodeValue());
+        //logger.log(Level.INFO, "node value " + path.getNodeValue());
         if (path == null) continue;
         NamedNodeMap nodeMap = path.getAttributes();
         Node dNode = nodeMap.getNamedItem("d");
         String dText = "";
         if (dNode != null) {
           dText = dNode.getNodeValue();
-          logger.log(Level.INFO, "D text = " + dText);
+          //logger.log(Level.INFO, "D text = " + dText);
         }
 
         int count = dText.length() - dText.replace(",", "").length();
         int littleCCount = dText.length() - dText.replace("c", "").length();
         int bigCCount = dText.length() - dText.replace("C", "").length();
         String nodeValue = transformNode.getNodeValue(); //svgPaths.item(i).getNodeValue();
-        logger.log(Level.INFO, "found: " + nodeValue);
+        //logger.log(Level.INFO, "found: " + nodeValue);
         if (nodeValue.contains("matrix")) {
           continue;
         } else {
@@ -214,7 +214,7 @@ public class RaveStudio extends PApplet {
               skippedFirstAlready = true;
               continue;
             }
-            logger.log(Level.INFO, "Adding: " + xy[0] + "," + xy[1] + " with count: " + count + " " + littleCCount + " " + bigCCount);
+            //logger.log(Level.INFO, "Adding: " + xy[0] + "," + xy[1] + " with count: " + count + " " + littleCCount + " " + bigCCount);
             LXPoint point = new LXPoint(Float.parseFloat(xy[0]) / 1000.0f, Float.parseFloat(xy[1]) / 1000.0f, 0.0);
             points.add(point);
           }
@@ -243,22 +243,25 @@ public class RaveStudio extends PApplet {
     }
     LXModel model = RaveModel3D.createModel(points);
     LXStudio.Flags flags = new LXStudio.Flags();
-    flags.showFramerate = false;
-    flags.isP3LX = true;
-    flags.immutableModel = true;
+    //flags.showFramerate = false;
+    //flags.isP3LX = true;
+    //flags.immutableModel = true;
+    flags.useGLPointCloud = false;
+    flags.startMultiThreaded = true;
+    //flags.showFramerate = true;
 
     logger.info("Current renderer:" + sketchRenderer());
     logger.info("Current graphics:" + getGraphics());
     logger.info("Current graphics is GL:" + getGraphics().isGL());
-    logger.info("Multithreaded hint: " + MULTITHREADED);
-    logger.info("Multithreaded actually: " + (MULTITHREADED && !getGraphics().isGL()));
+    //logger.info("Multithreaded hint: " + MULTITHREADED);
+    //logger.info("Multithreaded actually: " + (MULTITHREADED && !getGraphics().isGL()));
     lx = new LXStudio(this, flags, model);
 
-    lx.ui.setResizable(true);
+    //lx.ui.setResizable(true);
 
 
 
-    frameRate(GLOBAL_FRAME_RATE);
+    //frameRate(GLOBAL_FRAME_RATE);
   }
 
 
@@ -297,6 +300,9 @@ public class RaveStudio extends PApplet {
 
     modeSelector = (UIModeSelector) new UIModeSelector(lx.ui, lx, audioMonitorLevels).setExpanded(true).addToContainer(lx.ui.leftPane.global);
     modeSelector.standardMode.setActive(true);
+
+    // Disable preview for faster UI.
+    //lx.ui.preview.setVisible(false);
   }
 
   public void draw() {
