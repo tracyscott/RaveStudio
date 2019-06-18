@@ -52,7 +52,7 @@ public class Wiring extends RPattern {
     for (int i = 0; i < colors.length; i++) {
       colors[i] = Colors.BLACK;
     }
-    System.out.println("pIndex=" + pIndex);
+    //System.out.println("pIndex=" + pIndex);
     colors[pIndex] = Colors.WHITE;
     int tailLength = (int)tailKnob.getValue();
     int visibleTailLength = (pos > tailLength)? tailLength : pos;

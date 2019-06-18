@@ -60,7 +60,7 @@ abstract class PGBase extends RPattern {
    * Subclasses <em>must</em> call {@code super.onInactive()}.
    */
   @Override
-  public final void onInactive() {
+  public void onInactive() {
     setupCalled = false;
     tearDown();
   }
