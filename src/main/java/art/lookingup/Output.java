@@ -84,7 +84,7 @@ public class Output {
     RaveModel3D.frontWiringOrder = new ArrayList<Integer>();
     RaveModel3D.backWiringOrder = new ArrayList<Integer>();
 
-    while (universeNumber <= RAVE_UNIVERSES) {
+    while (universeNumber < RAVE_UNIVERSES) {
       for (List<Integer> indices : outputs) {
         // For the Rave sign, we only have outputs 1 through 4 mapped.  If there is nothing on the output in the
         // wiring.txt file skip it.  We will make 2 passes of the wiring.txt file, one for each side of the sign.
@@ -106,9 +106,9 @@ public class Output {
           for (pointNum = 0; pointNum < 170 && (pointNum + chunkNumber * 170 < indices.size());
                pointNum++) {
             int pIndex = indices.get(pointNum + chunkNumber * 170);
-            if (outputNumber > RAVE_OUTPUTS/2) pIndex += 1050;
+            if (outputNumber >= RAVE_OUTPUTS/2) pIndex += 1050;
             thisUniverseIndices[pointNum] = pIndex;
-            if (outputNumber <= RAVE_OUTPUTS/2) {
+            if (outputNumber < RAVE_OUTPUTS/2) {
               RaveModel3D.frontWiringOrder.add(pIndex);
             } else {
               RaveModel3D.backWiringOrder.add(pIndex);
