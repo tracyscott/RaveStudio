@@ -80,7 +80,7 @@ public class Output {
     List<ArtNetDatagram> datagrams = new ArrayList<ArtNetDatagram>();
 
     int outputNumber = 1;
-    int universeNumber = 1;
+    int universeNumber = 0;
     RaveModel3D.frontWiringOrder = new ArrayList<Integer>();
     RaveModel3D.backWiringOrder = new ArrayList<Integer>();
 
