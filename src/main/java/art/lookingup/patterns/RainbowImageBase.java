@@ -52,6 +52,9 @@ abstract class RainbowImageBase extends RPattern implements CustomDeviceUI {
   protected int paddingX;
   protected int numTiles;
   protected PGraphics pg;
+  protected double currentFrame = 0.0;
+  protected double previousFrame = -1.0;
+  protected double deltaDrawMs = 0.0;
 
   public RainbowImageBase(LX lx, int imageWidth, int imageHeight,
                           String filesDir, String defaultFile,
@@ -124,16 +127,17 @@ abstract class RainbowImageBase extends RPattern implements CustomDeviceUI {
 
   public void render(double deltaMs) {
     double fps = fpsKnob.getValue();
-    /* Leaving FPS and frame logic for now incase we want to do some Ken Burns
-    currentFrame += (deltaMs/1000.0) * fps;
-    if (currentFrame >= images.length) {
-      currentFrame -= images.length;
-    }
-    */
-    try {
-      renderToPoints();
-    } catch (ArrayIndexOutOfBoundsException ex) {
-      // handle race condition while reloading animated gif.
+    currentFrame += (deltaMs / 1000.0) * fps;
+    deltaDrawMs += deltaMs;
+    //Leaving FPS and frame logic for now incase we want to do some Ken Burns
+    if ((int) currentFrame > previousFrame) {
+      try {
+        renderToPoints();
+      } catch (ArrayIndexOutOfBoundsException ex) {
+        // handle race condition while reloading animated gif.
+      }
+      previousFrame = (int) currentFrame;
+      deltaDrawMs = 0.0;
     }
   }
 

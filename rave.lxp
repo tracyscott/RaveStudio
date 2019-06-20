@@ -1,10 +1,10 @@
 {
   "version": "0.1.1",
-  "timestamp": 1561069693650,
+  "timestamp": 1561072567998,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
-    "modulationColor": -16711879,
+    "modulationColor": -16711920,
     "internal": {},
     "parameters": {
       "label": "LX",
@@ -105,7 +105,7 @@
               "exp": 0.0
             },
             "children": {},
-            "basis": 0.046264419384436185
+            "basis": 0.3275583429711673
           },
           {
             "id": 252,
@@ -613,7 +613,7 @@
           }
         ],
         "clips": [],
-        "patternIndex": 3,
+        "patternIndex": 7,
         "patterns": [
           {
             "id": 189,
@@ -853,8 +853,8 @@
             },
             "parameters": {
               "label": "ImageScan",
-              "Fps": 59.17000004090369,
-              "img": "josh-300x300_2.jpg",
+              "Fps": 37.820000518113375,
+              "img": "seurat.jpg",
               "tile": false
             },
             "children": {
@@ -1094,9 +1094,9 @@
         "centerPoint": false,
         "camera": {
           "active": false,
-          "radius": 21.299601877166694,
-          "theta": 6.5742767948684735,
-          "phi": 0.21303782967500595,
+          "radius": 16.357925480040763,
+          "theta": 6.846145391241056,
+          "phi": 0.25728561416712226,
           "x": 4.666718079941347,
           "y": 3.5172180980443954,
           "z": 2.317202358972281
@@ -1104,9 +1104,9 @@
         "cue": [
           {
             "active": false,
-            "radius": 21.299601877166694,
-            "theta": 6.5742767948684735,
-            "phi": 0.21303782967500595,
+            "radius": 16.357925480040763,
+            "theta": 6.846145391241056,
+            "phi": 0.25728561416712226,
             "x": 4.666718079941347,
             "y": 3.5172180980443954,
             "z": 2.317202358972281
