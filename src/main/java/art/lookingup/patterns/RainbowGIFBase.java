@@ -33,6 +33,21 @@ abstract class RainbowGIFBase extends RPattern implements CustomDeviceUI {
           .setDescription("Controls the frames per second.");
   public final BooleanParameter antialiasKnob =
       new BooleanParameter("antialias", true);
+  public final CompoundParameter xOff =
+      new CompoundParameter("xOff", 0.0, 0.0, 800.0)
+          .setDescription("x Offset into src image");
+  public final CompoundParameter yOff =
+      new CompoundParameter("yOff", 0.0, 0.0, 800.0)
+          .setDescription("y Offset into src image");
+  public final CompoundParameter scaleAmt =
+      new CompoundParameter("scaleAmt", 1.0, 0.01, 2.0)
+          .setDescription("Scale src image amount");
+  public final BooleanParameter scaleSrc =
+      new BooleanParameter("scaleSrc", true)
+          .setDescription("Whether to scale source image");
+  public final BooleanParameter fitSrc =
+      new BooleanParameter("fitSrc", true)
+          .setDescription("Fit src image to output");
   public final StringParameter gifKnob =
       new StringParameter("gif", "")
           .setDescription("Animated gif");
@@ -63,6 +78,12 @@ abstract class RainbowGIFBase extends RPattern implements CustomDeviceUI {
     reloadFileList();
 
     addParameter(fpsKnob);
+    addParameter(scaleAmt);
+    addParameter(scaleSrc);
+    addParameter(fitSrc);
+    addParameter(xOff);
+    addParameter(yOff);
+
     if (includeAntialias) addParameter(antialiasKnob);
     addParameter(gifKnob);
     gifKnob.addListener(new LXParameterListener() {
@@ -84,8 +105,15 @@ abstract class RainbowGIFBase extends RPattern implements CustomDeviceUI {
   private void loadGif(String gifname) {
     logger.info("Loading gif: " + gifname);
     PImage[] newImages = PathUtils.loadSprite(RaveStudio.pApplet, filesDir + gifname + ".gif");
-    for (PImage image : newImages) {
-      image.resize(imageWidth, imageHeight);
+    if (scaleSrc.getValueb()) {
+      for (PImage image : newImages) {
+        if (fitSrc.getValueb())
+          image.resize(imageWidth, imageHeight);
+        else {
+          image.resize((int)((float)image.width * scaleAmt.getValue()),
+              (int)((float)image.height * scaleAmt.getValue()));
+        }
+      }
     }
     // minimize race condition when reloading.
     images = newImages;
@@ -137,15 +165,17 @@ abstract class RainbowGIFBase extends RPattern implements CustomDeviceUI {
 
     UI2dContainer knobsContainer = new UI2dContainer(0, 30, device.getWidth(), 45);
     knobsContainer.setLayout(UI2dContainer.Layout.HORIZONTAL);
-    knobsContainer.setPadding(8, 8, 8, 8);
+    knobsContainer.setPadding(1, 1, 1, 1);
     new UIKnob(fpsKnob).addToContainer(knobsContainer);
+    new UIKnob(xOff).addToContainer(knobsContainer);
+    new UIKnob(yOff).addToContainer(knobsContainer);
     if (includeAntialias) {
       UISwitch antialiasButton = new UISwitch(0, 0);
       antialiasButton.setParameter(antialiasKnob);
       antialiasButton.setMomentary(false);
       antialiasButton.addToContainer(knobsContainer);
     }
-    new UIButton(CONTROLS_MIN_WIDTH, 10, 60, 20) {
+    new UIButton(CONTROLS_MIN_WIDTH, 10, 20, 20) {
       @Override
       public void onToggle(boolean on) {
         if (on) {
@@ -153,14 +183,29 @@ abstract class RainbowGIFBase extends RPattern implements CustomDeviceUI {
         }
       }
     }
-    .setLabel("rescan dir").setMomentary(true).addToContainer(knobsContainer);
-
+    .setLabel("rescn").setMomentary(true).addToContainer(knobsContainer);
     knobsContainer.addToContainer(device);
+
+    knobsContainer = new UI2dContainer(0, 30, device.getWidth(), 45);
+    knobsContainer.setLayout(UI2dContainer.Layout.HORIZONTAL);
+
+    new UIKnob(scaleAmt).addToContainer(knobsContainer);
+
+    UISwitch scaleButton = new UISwitch(0, 0);
+    scaleButton.setParameter(scaleSrc);
+    scaleButton.setMomentary(false);
+    scaleButton.addToContainer(knobsContainer);
+    UISwitch fitButton = new UISwitch(0, 0);
+    fitButton.setParameter(fitSrc);
+    fitButton.setMomentary(false);
+    fitButton.addToContainer(knobsContainer);
+    knobsContainer.addToContainer(device);
+
 
     UI2dContainer filenameEntry = new UI2dContainer(0, 0, device.getWidth(), 30);
     filenameEntry.setLayout(UI2dContainer.Layout.HORIZONTAL);
 
-    fileItemList =  new UIItemList.ScrollList(ui, 0, 5, CONTROLS_MIN_WIDTH, 80);
+    fileItemList =  new UIItemList.ScrollList(ui, 0, 5, CONTROLS_MIN_WIDTH, 50);
     new UITextBox(0, 0, device.getContentWidth() - 22, 20)
       .setParameter(gifKnob)
       .setTextAlignment(PConstants.LEFT)

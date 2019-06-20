@@ -8,10 +8,10 @@ import heronarts.lx.parameter.DiscreteParameter;
 import static java.lang.Math.ceil;
 import static processing.core.PConstants.HSB;
 
-public class RandomTri extends PGPixelPerfect {
+public class RandomTri extends PGFilterBase {
 
   public DiscreteParameter paletteKnob = new DiscreteParameter("palette", 0, 0, Colors.ALL_PALETTES.length + 1);
-  public DiscreteParameter sidesKnob = new DiscreteParameter("sides", 3, 2, 5);
+  public DiscreteParameter sidesKnob = new DiscreteParameter("sides", 3, 3, 5);
   public CompoundParameter bgAlpha = new CompoundParameter("bgalpha", 0.25, 0.0, 1.0);
   // Probability of a new triangle show up each frame.  Should we allow multiple triangles per frame?  nah,
   // probably not.
@@ -23,9 +23,11 @@ public class RandomTri extends PGPixelPerfect {
   public CompoundParameter fillAlpha = new CompoundParameter("falpha", 0.75, 0.0, 1.0);
   public CompoundParameter saturation = new CompoundParameter("sat", 0.5, 0.0, 1.0);
   public CompoundParameter bright = new CompoundParameter("bright", 1.0, 0.0, 1.0);
+  public CompoundParameter blurRadiusKnob = new CompoundParameter("blurR", 0.0, 0.0, 10.0);
+  public CompoundParameter blurPassKnob = new CompoundParameter("blurP", 0.0, 0.0, 40.0);
 
   public RandomTri(LX lx) {
-    super(lx, "");
+    super(lx);
     addParameter(paletteKnob);
     addParameter(sidesKnob);
     addParameter(bgAlpha);
@@ -34,6 +36,9 @@ public class RandomTri extends PGPixelPerfect {
     addParameter(maxOffScreen);
     addParameter(fillAlpha);
     addParameter(saturation);
+    addParameter(blurRadiusKnob);
+    addParameter(blurPassKnob);
+    doDirBlur = true;
   }
 
   /*
@@ -53,6 +58,9 @@ public class RandomTri extends PGPixelPerfect {
     for (int i = 0; i < newTriProbability.getValue(); i++) {
       drawRandomTriangle();
     }
+    blurRadius = (int) blurRadiusKnob.getValue();
+    dirBlurPasses = (int) blurPassKnob.getValue();
+    super.draw(drawDeltaMs);
   }
 
   public void drawRandomTriangle() {
@@ -96,7 +104,11 @@ public class RandomTri extends PGPixelPerfect {
 
     pg.fill(h, s, b, fillAlpha.getValuef());
     //pg.triangle(pt1X, pt1Y, pt2X, pt2Y, pt3X, pt3Y);
-    pg.triangle(centerX + pt1XDelta, centerY + pt1YDelta, centerX + pt2XDelta, centerY + pt2YDelta,
-        centerX + pt3XDelta, centerY + pt3YDelta);
+    if (sidesKnob.getValue() == 3) {
+      pg.triangle(centerX + pt1XDelta, centerY + pt1YDelta, centerX + pt2XDelta, centerY + pt2YDelta,
+          centerX + pt3XDelta, centerY + pt3YDelta);
+    } else {
+      pg.rect(centerX, centerY, pt1XDelta, pt1YDelta);
+    }
   }
 }
