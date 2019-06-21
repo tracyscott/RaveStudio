@@ -157,6 +157,8 @@ public class RaveStudio extends PApplet {
     // Processing setup, constructs the window and the LX instance
     pApplet = this;
 
+    pApplet.sketchPath("./");
+
     try {
       addLogFileHandler(LOG_FILENAME_PREFIX);
     } catch (IOException ex) {
@@ -259,8 +261,9 @@ public class RaveStudio extends PApplet {
 
     //lx.ui.setResizable(true);
 
-
-
+    // Put this here because it needs to be after file loads in order to find appropriate channels.
+    modeSelector = (UIModeSelector) new UIModeSelector(lx.ui, lx, audioMonitorLevels).setExpanded(true).addToContainer(lx.ui.leftPane.global);
+    modeSelector.standardMode.setActive(true);
     //frameRate(GLOBAL_FRAME_RATE);
   }
 
@@ -298,8 +301,7 @@ public class RaveStudio extends PApplet {
 
     rainbowOSC = new RainbowOSC(lx);
 
-    modeSelector = (UIModeSelector) new UIModeSelector(lx.ui, lx, audioMonitorLevels).setExpanded(true).addToContainer(lx.ui.leftPane.global);
-    modeSelector.standardMode.setActive(true);
+
 
     // Disable preview for faster UI.
     //lx.ui.preview.setVisible(false);

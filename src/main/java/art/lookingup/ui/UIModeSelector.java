@@ -86,6 +86,7 @@ public class UIModeSelector extends UICollapsibleSection {
     standardMode = (UIButton) new UIButton(0, 0, getContentWidth(), 18) {
       public void onToggle(boolean on) {
         if (on) {
+          logger.info("Enabling standard mode.");
           audioMode.setActive(false);
           interactiveMode.setActive(false);
           instrumentMode.setActive(false);
