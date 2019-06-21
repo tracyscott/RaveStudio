@@ -6,6 +6,7 @@ import heronarts.lx.LXChannel;
 import heronarts.lx.LXEffect;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
+import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXParameter;
@@ -14,6 +15,7 @@ import processing.core.PImage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 
 import static java.lang.Math.ceil;
@@ -38,6 +40,8 @@ public class RTracers extends PGPixelPerfect {
   public CompoundParameter fillAlpha = new CompoundParameter("falpha", 0.75, 0.0, 1.0);
   public CompoundParameter saturation = new CompoundParameter("sat", 0.5, 0.0, 1.0);
   public CompoundParameter bright = new CompoundParameter("bright", 1.0, 0.0, 1.0);
+  public final BooleanParameter randomPaletteKnob =
+      new BooleanParameter("RandomPlt", true);
 
   protected boolean originalBlurEnabled = false;
   protected float originalBlurAmount = 0.0f;
@@ -53,6 +57,8 @@ public class RTracers extends PGPixelPerfect {
   };
 
   List<Tracer> tracers = new ArrayList<Tracer>();
+  public int[] palette;
+  public int randomPalette = 0;
 
   public RTracers(LX lx) {
     super(lx, "");
@@ -66,6 +72,7 @@ public class RTracers extends PGPixelPerfect {
     addParameter(maxOffScreen);
     addParameter(fillAlpha);
     addParameter(saturation);
+    addParameter(randomPaletteKnob);
   }
 
   /*
@@ -144,6 +151,8 @@ public class RTracers extends PGPixelPerfect {
 
   public void getNewHSB(float[] hsb) {
     int whichPalette = paletteKnob.getValuei();
+    if (randomPaletteKnob.getValueb())
+      whichPalette = randomPalette;
 
     if (whichPalette == 0) {
       hsb[0] = (float) Math.random();
@@ -223,6 +232,14 @@ public class RTracers extends PGPixelPerfect {
       }
       effect.enable();
 
+    }
+
+    if (randomPaletteKnob.getValueb()) {
+      int paletteNumber = ThreadLocalRandom.current().nextInt(0, Colors.ALL_PALETTES.length);
+      palette = Colors.ALL_PALETTES[paletteNumber];
+      randomPalette = paletteNumber;
+    } else {
+      palette = Colors.ALL_PALETTES[paletteKnob.getValuei()];
     }
   }
 

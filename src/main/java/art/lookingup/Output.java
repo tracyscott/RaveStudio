@@ -106,9 +106,9 @@ public class Output {
           for (pointNum = 0; pointNum < 170 && (pointNum + chunkNumber * 170 < indices.size());
                pointNum++) {
             int pIndex = indices.get(pointNum + chunkNumber * 170);
-            if (outputNumber >= RAVE_OUTPUTS/2) pIndex += 1050;
+            if (outputNumber > RAVE_OUTPUTS/2) pIndex += 1050;
             thisUniverseIndices[pointNum] = pIndex;
-            if (outputNumber < RAVE_OUTPUTS/2) {
+            if (outputNumber <= RAVE_OUTPUTS/2) {
               RaveModel3D.frontWiringOrder.add(pIndex);
             } else {
               RaveModel3D.backWiringOrder.add(pIndex);

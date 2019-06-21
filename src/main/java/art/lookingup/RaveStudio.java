@@ -259,7 +259,7 @@ public class RaveStudio extends PApplet {
     //logger.info("Multithreaded actually: " + (MULTITHREADED && !getGraphics().isGL()));
     lx = new LXStudio(this, flags, model);
 
-    //lx.ui.setResizable(true);
+    lx.ui.setResizable(true);
 
     // Put this here because it needs to be after file loads in order to find appropriate channels.
     modeSelector = (UIModeSelector) new UIModeSelector(lx.ui, lx, audioMonitorLevels).setExpanded(true).addToContainer(lx.ui.leftPane.global);

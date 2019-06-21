@@ -2,8 +2,13 @@ package art.lookingup.patterns;
 
 import art.lookingup.colors.Colors;
 import heronarts.lx.LX;
+import heronarts.lx.LXChannel;
+import heronarts.lx.LXEffect;
+import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.DiscreteParameter;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.Math.ceil;
 import static processing.core.PConstants.HSB;
@@ -25,6 +30,10 @@ public class RandomTri extends PGFilterBase {
   public CompoundParameter bright = new CompoundParameter("bright", 1.0, 0.0, 1.0);
   public CompoundParameter blurRadiusKnob = new CompoundParameter("blurR", 0.0, 0.0, 10.0);
   public CompoundParameter blurPassKnob = new CompoundParameter("blurP", 0.0, 0.0, 40.0);
+  public final BooleanParameter randomPaletteKnob =
+      new BooleanParameter("RandomPlt", true);
+  public int[] palette;
+  public int randomPalette = 0;
 
   public RandomTri(LX lx) {
     super(lx);
@@ -38,6 +47,7 @@ public class RandomTri extends PGFilterBase {
     addParameter(saturation);
     addParameter(blurRadiusKnob);
     addParameter(blurPassKnob);
+    addParameter(randomPaletteKnob);
     doDirBlur = true;
   }
 
@@ -62,6 +72,17 @@ public class RandomTri extends PGFilterBase {
     dirBlurPasses = (int) blurPassKnob.getValue();
     super.draw(drawDeltaMs);
   }
+  @Override
+  public void onActive() {
+    if (randomPaletteKnob.getValueb()) {
+      int paletteNumber = ThreadLocalRandom.current().nextInt(0, Colors.ALL_PALETTES.length);
+      palette = Colors.ALL_PALETTES[paletteNumber];
+      randomPalette = paletteNumber;
+    } else {
+      palette = Colors.ALL_PALETTES[paletteKnob.getValuei()];
+    }
+  }
+
 
   public void drawRandomTriangle() {
     float centerX = ((float)Math.random() * pg.width + 2.0f * maxOffScreen.getValuef()) - maxOffScreen.getValuef();
@@ -82,6 +103,10 @@ public class RandomTri extends PGFilterBase {
     */
 
     int whichPalette = paletteKnob.getValuei();
+
+    if (randomPaletteKnob.getValueb())
+      whichPalette = randomPalette;
+
     float h = 0.0f;
     float s = 0.0f;
     float b = 0.0f;
