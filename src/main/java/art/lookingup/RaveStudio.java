@@ -101,7 +101,7 @@ public class RaveStudio extends PApplet {
 
   @Override
   public void settings() {
-    size(1024, 678, P3D);
+    size(1200, 678, P3D);
   }
 
   /**
@@ -328,7 +328,7 @@ public class RaveStudio extends PApplet {
   final static float METER = M;
 
   public static final boolean enableOutput = true;
-  public static final boolean disableOutputOnStart = true;
+  public static final boolean disableOutputOnStart = false;
 
   public static final int LEDS_PER_UNIVERSE = 170;
 }
